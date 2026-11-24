@@ -1,0 +1,26 @@
+FUNCTION GenerateKeys(bit_length):
+    // 1. Choose two distinct, large random prime numbers
+    p = GenerateLargePrime(bit_length / 2)
+    q = GenerateLargePrime(bit_length / 2)
+    WHILE p == q:
+        q = GenerateLargePrime(bit_length / 2)
+
+    // 2. Compute the modulus n
+    n = p * q
+
+    // 3. Compute Euler's totient function φ(n)
+    phi = (p - 1) * (q - 1)
+
+    // 4. Choose public exponent e (commonly 65537)
+    // Must satisfy: 1 < e < phi AND gcd(e, phi) == 1
+    e = 65537
+    WHILE GCD(e, phi) != 1:
+        e = RandomInteger(3, phi - 1)
+
+    // 5. Compute private exponent d (modular multiplicative inverse of e)
+    // Must satisfy: (d * e) mod phi == 1
+    d = ModularInverse(e, phi)
+
+    // 6. Discard p, q, and phi for security
+    RETURN PublicKey(n, e), PrivateKey(n, d)
+END FUNCTION
